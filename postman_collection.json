@@ -1,0 +1,170 @@
+{
+  "info": {
+    "name": "College Appointment Booking",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "a1Token", "value": "" },
+    { "key": "a2Token", "value": "" },
+    { "key": "p1Token", "value": "" },
+    { "key": "p1Id", "value": "" },
+    { "key": "slot1Id", "value": "" },
+    { "key": "slot2Id", "value": "" },
+    { "key": "a1AppointmentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. A1 Register",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Student A1\",\n  \"email\": \"a1@test.com\",\n  \"password\": \"pass123\",\n  \"role\": \"student\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "2. A1 Login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"a1@test.com\",\n  \"password\": \"pass123\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "3. P1 Register",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Professor P1\",\n  \"email\": \"p1@test.com\",\n  \"password\": \"pass123\",\n  \"role\": \"professor\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "4. P1 Login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"p1@test.com\",\n  \"password\": \"pass123\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "5. P1 Create Availability",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/professors/me/availability",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{p1Token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"slots\": [\n    { \"startTime\": \"2025-03-01T10:00:00.000Z\", \"endTime\": \"2025-03-01T11:00:00.000Z\" },\n    { \"startTime\": \"2025-03-01T12:00:00.000Z\", \"endTime\": \"2025-03-01T13:00:00.000Z\" }\n  ]\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "6. A1 Get P1 Availability",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/professors/{{p1Id}}/availability?from=2025-03-01&to=2025-03-02",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{a1Token}}" }
+        ]
+      }
+    },
+    {
+      "name": "7. A1 Book Slot (T1)",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/appointments",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{a1Token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"professorId\": \"{{p1Id}}\",\n  \"slotId\": \"{{slot1Id}}\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "8. A2 Register",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Student A2\",\n  \"email\": \"a2@test.com\",\n  \"password\": \"pass123\",\n  \"role\": \"student\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "9. A2 Login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"a2@test.com\",\n  \"password\": \"pass123\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "10. A2 Book Slot (T2)",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/appointments",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{a2Token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"professorId\": \"{{p1Id}}\",\n  \"slotId\": \"{{slot2Id}}\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "11. P1 Cancel A1 Appointment",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/appointments/{{a1AppointmentId}}/cancel",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{p1Token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Schedule change\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "12. A1 My Booked Appointments (empty)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/students/me/appointments?status=booked",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{a1Token}}" }
+        ]
+      }
+    }
+  ]
+}

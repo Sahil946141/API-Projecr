@@ -1,0 +1,195 @@
+Step 1 – Student A1: Register & Login
+1.1 Register
+
+Endpoint
+
+POST /auth/register
+
+
+Body
+
+{
+  "name": "A1",
+  "email": "a1@test.com",
+  "password": "pass123",
+  "role": "student"
+}
+
+1.2 Login
+
+Endpoint
+
+POST /auth/login
+
+Body
+
+{
+  "email": "a1@test.com",
+  "password": "pass123"
+}
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTk4MmM2YzQ0ZjAwN2E5MWQxMmNiNWEiLCJpYXQiOjE3NzE1ODA1NjEsImV4cCI6MTc3MjE4NTM2MX0.EW9eYcFF9cCjYvujIQYtuWBfip3RUjSgMfFZKDYZxds"
+"69982c6c44f007a91d12cb5a"
+
+Save: A1_TOKEN
+Save: A1_ID
+
+Step 2 – Professor P1: Register & Login
+2.1 Register
+POST /auth/register
+
+{
+  "name": "P1",
+  "email": "p1@test.com",
+  "password": "pass123",
+  "role": "professor"
+}
+
+2.2 Login
+POST /auth/login
+
+{
+  "email": "p1@test.com",
+  "password": "pass123"
+}
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTk4MmQ3MTQ0ZjAwN2E5MWQxMmNiNWUiLCJpYXQiOjE3NzE1ODA4MDEsImV4cCI6MTc3MjE4NTYwMX0.qDDJkUfqhID84P37jRNb9X9RpnK9-Gud8F-jB69cQNo"
+"69982d7144f007a91d12cb5e"
+Save: P1_TOKEN
+Save: P1_ID
+
+ Step 3 – P1 Creates Availability (T1, T2)
+
+Endpoint
+
+POST /professors/me/availability
+
+
+Headers
+
+Authorization: Bearer <P1_TOKEN>
+
+
+Body
+
+{
+  "slots": [
+    {
+      "startTime": "2026-02-25T10:00:00.000Z",
+      "endTime": "2026-02-25T11:00:00.000Z"
+    },
+    {
+      "startTime": "2026-02-26T12:00:00.000Z",
+      "endTime": "2026-02-26T13:00:00.000Z"
+    }
+  ]
+}
+
+
+Save:
+69982e1444f007a91d12cb64
+69982e1444f007a91d12cb65
+69982e8244f007a91d12cb6a
+ Step 4 – A1 Views P1’s Free Slots
+
+Endpoint
+
+GET /professors/<P1_ID>/availability?from=2025-03-01&to=2025-03-02
+
+
+Headers
+
+Authorization: Bearer <A1_TOKEN>
+
+
+ Extract:
+
+T1_SLOT_ID
+
+T2_SLOT_ID
+
+ Step 5 – A1 Books First Slot (T1)
+
+Endpoint
+
+POST /appointments
+
+
+Headers
+
+Authorization: Bearer <A1_TOKEN>
+
+
+Body
+
+{
+  "professorId": "<P1_ID>",
+  "slotId": "<T1_SLOT_ID>"
+}
+
+
+ Save: A1_APPOINTMENT_ID
+
+ Step 6 – Student A2: Register & Login
+6.1 Register
+POST /auth/register
+
+{
+  "name": "A2",
+  "email": "a2@test.com",
+  "password": "pass123",
+  "role": "student"
+}
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTk4MzFmYWU0Y2RhNzQ0MGU2NTYxZjciLCJpYXQiOjE3NzE1ODE5NjYsImV4cCI6MTc3MjE4Njc2Nn0.IBHSqx4Kj6-AVR50k_hfzxwm5Lcg6XIjXgkpF6H6eS8"
+"699831fae4cda7440e6561f7"
+6.2 Login
+POST /auth/login
+
+{
+  "email": "a2@test.com",
+  "password": "pass123"
+}
+
+
+ Save: A2_TOKEN
+
+ Step 7 – A2 Books Second Slot (T2)
+
+Endpoint
+
+POST /appointments
+
+
+Headers
+
+Authorization: Bearer <A2_TOKEN>
+
+
+Body
+
+{
+  "professorId": "<P1_ID>",
+  "slotId": "<T2_SLOT_ID>"
+}
+
+ Step 8 – P1 Cancels A1’s Appointment
+
+Endpoint
+
+POST /appointments/<A1_APPOINTMENT_ID>/cancel
+
+
+Headers
+
+Authorization: Bearer <P1_TOKEN>
+
+
+Body (Optional)
+
+{
+  "reason": "Schedule change"
+}
+
+ Step 9 – A1 Lists Booked Appointments
+
+Endpoint
+
+GET /students/me/appointments?status=booked
